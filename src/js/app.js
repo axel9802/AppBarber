@@ -28,6 +28,15 @@ function iniciarApp(){
 
     //Muestra el resumen de la cita o mensaje de error en caso de no pasar la validacion
     mostrarResumen();
+
+    //Almacena el nombre de la cita en el objeto
+    nombreCita();
+
+    //Almacena la fecha de la cita en el objeto
+    fechaCita();
+
+    //Deshabilita dias pasados
+    deshabilitarFechaAnterior();
 }
 
 function mostrarSeccion(){
@@ -220,4 +229,81 @@ function mostrarResumen(){
         //Agregar a resumenDiv
         resumenDiv.appendChild(noServicios);
     }
+}
+
+function nombreCita(){
+    const nombreInput = document.querySelector('#nombre');
+    nombreInput.addEventListener('input', (e) => {
+        const nombreTexto = e.target.value.trim();
+        
+        //Validacion de que nombreTexto debe tener algo escrito
+        if(nombreTexto === '' || nombreTexto.length < 3){
+            mostrarAlerta('Nombre no valido', 'error');
+        } else {
+            const alerta = document.querySelector('.alerta');
+            if (alerta) {
+                alerta.remove();
+            }
+            cita.nombre = nombreTexto;
+        }
+    })
+}
+
+function mostrarAlerta(mensaje, tipo){
+
+    //Si hay una alerta previa, entonces no crear otra
+    const alertaPrevia = document.querySelector('.alerta');
+    if (alertaPrevia) {
+        return;
+    }
+
+    const alerta = document.createElement('DIV');
+    alerta.textContent = mensaje;
+    alerta.classList.add('alerta');
+
+    if(tipo === 'error'){
+        alerta.classList.add('error');
+    }
+
+    //Insertar en el HTML
+    const formulario = document.querySelector('.formulario');
+    formulario.appendChild(alerta);
+
+    //Eliminar la alerta despues de 3 segundos
+    setTimeout(() => {
+        alerta.remove();
+    }, 3000);
+}
+
+function fechaCita(){
+    const fechaInput = document.querySelector('#fecha');
+    fechaInput.addEventListener('input', (e) => {
+        //UTCDay me devuelve el numero de dia siendo 0 domingo y 6 sabado
+        const dia = new Date(e.target.value).getUTCDay();
+        //No se puede reservar ni domingo ni sabado
+        if ([0,6].includes(dia)) {
+            e.preventDefault();
+            fechaInput.value = '';
+            mostrarAlerta('Fines de semana no son permitidos', 'error');
+        } else {
+            cita.fecha = fechaInput.value;
+            console.log(cita);
+        }   
+    })
+}
+
+function deshabilitarFechaAnterior(){
+    const inputFecha = document.querySelector('#fecha');
+
+    const fechaAhora = new Date();
+    const year = fechaAhora.getFullYear();
+    const mes = fechaAhora.getMonth() + 1;
+    const dia = fechaAhora.getDate();
+
+    //Deshabilitar fechas antiguas
+    //Formato deseado: YYYY-MM-DD
+    const fechaDeshabilitar = `${year}-${mes}-${dia}`;
+    //`${year}-${mes < 10 ? `0${mes}` : mes}-${dia}`
+
+    inputFecha.min = fechaDeshabilitar;
 }

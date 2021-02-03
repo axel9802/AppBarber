@@ -28,6 +28,7 @@ function iniciarApp(){
 
     //Muestra el resumen de la cita o mensaje de error en caso de no pasar la validacion
     mostrarResumen();
+<<<<<<< HEAD
 
     //Almacena el nombre de la cita en el objeto
     nombreCita();
@@ -37,6 +38,8 @@ function iniciarApp(){
 
     //Deshabilita dias pasados
     deshabilitarFechaAnterior();
+=======
+>>>>>>> 4a5919328cff713284f498d48dc2a0060b7f1008
 }
 
 function mostrarSeccion(){
@@ -229,6 +232,7 @@ function mostrarResumen(){
         //Agregar a resumenDiv
         resumenDiv.appendChild(noServicios);
     }
+<<<<<<< HEAD
 }
 
 function nombreCita(){
@@ -306,4 +310,6 @@ function deshabilitarFechaAnterior(){
     //`${year}-${mes < 10 ? `0${mes}` : mes}-${dia}`
 
     inputFecha.min = fechaDeshabilitar;
+=======
+>>>>>>> 4a5919328cff713284f498d48dc2a0060b7f1008
 }

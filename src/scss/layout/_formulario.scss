@@ -15,20 +15,18 @@
         border-radius: 1rem;
         border: none;
     }
-<<<<<<< HEAD
 }
 
 .alerta{
 
-    padding: $separacion/2;
+    padding: $separacion/4;
     text-align: center;
     color: $blanco;
     width: 100%;
     display: block;
 
     &.error{
-        background-color: rgb(194, 0, 0);
+        background-color: rgba(228, 57, 57, 0.699);
+        border: rgb(228, 135, 135) 8px outset;
     }
-=======
->>>>>>> 4a5919328cff713284f498d48dc2a0060b7f1008
 }

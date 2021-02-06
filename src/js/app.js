@@ -28,7 +28,6 @@ function iniciarApp(){
 
     //Muestra el resumen de la cita o mensaje de error en caso de no pasar la validacion
     mostrarResumen();
-<<<<<<< HEAD
 
     //Almacena el nombre de la cita en el objeto
     nombreCita();
@@ -38,8 +37,10 @@ function iniciarApp(){
 
     //Deshabilita dias pasados
     deshabilitarFechaAnterior();
-=======
->>>>>>> 4a5919328cff713284f498d48dc2a0060b7f1008
+
+    //Almacena la hora de la cita en el objeto
+    horaCita();
+
 }
 
 function mostrarSeccion(){
@@ -79,7 +80,7 @@ function cambiarSeccion(){
             mostrarSeccion();
             //Para que aparezcan los botones 'Anterior y Siguiente' tambien cuando cambie por los tabs
             botonesPaginador();
-        })
+        });
     })
 }
 
@@ -186,7 +187,7 @@ function paginaSiguiente(){
         pagina++;
 
         botonesPaginador();
-    })
+    });
 }
 
 function paginaAnterior(){
@@ -195,7 +196,7 @@ function paginaAnterior(){
         pagina--;
 
         botonesPaginador();
-    })
+    });
 }
 
 function botonesPaginador(){
@@ -207,6 +208,9 @@ function botonesPaginador(){
     } else if (pagina === 3){
         paginaSiguiente.classList.add('ocultar');
         paginaAnterior.classList.remove('ocultar');
+
+        //Esto se pone porque esta en DOMContentLoaded(pagina cuando ya esta cargada) y debe volver a leer(actualizar) la funcion mostrar para que se muestren los cambios
+        mostrarResumen(); //Estamos en la pagina 3, carga el resumen de la cita cuando y hayan valores seleccionados 
     } else {
         paginaAnterior.classList.remove('ocultar');
         paginaSiguiente.classList.remove('ocultar');
@@ -222,6 +226,14 @@ function mostrarResumen(){
     //Seleccionar Resumen
     const resumenDiv = document.querySelector('.contenido-resumen');
 
+    //Limpiar HTML previo
+       /* //Forma mas facil
+        resumenDiv.innerHTML = '';*/
+    //Forma eficiente - Mientras .contenido-resumen tenga HTMl o contenido dentro se ejecuta el while
+    while (resumenDiv.firstChild) {
+            resumenDiv.removeChild(resumenDiv.firstChild);
+    }
+
     //Validacion de objetos
     if(Object.values(cita).includes('')){
         const noServicios = document.createElement('P');
@@ -231,8 +243,72 @@ function mostrarResumen(){
 
         //Agregar a resumenDiv
         resumenDiv.appendChild(noServicios);
-    }
-<<<<<<< HEAD
+
+        //Despues de ejecutar el if ya no se ejecute el siguiente codigo
+        return;
+    } 
+
+    const headingDatos = document.createElement('H3');
+    headingDatos.textContent = 'Datos Usuario';
+
+    //Mostrar el resumen
+    const nombreCita = document.createElement('P');
+    nombreCita.innerHTML = `<span>Nombre:</span> ${nombre}`;
+
+    const fechaCita = document.createElement('P');
+    fechaCita.innerHTML = `<span>Fecha:</span> ${fecha}`;
+
+    const horaCita = document.createElement('P');
+    horaCita.innerHTML = `<span>Hora:</span> ${hora}`;
+    
+
+    const serviciosCita = document.createElement('DIV');
+    serviciosCita.classList.add('resumen-servicios');
+
+    const headingServicios = document.createElement('H3');
+    headingServicios.textContent = 'Detalles Servicios';
+    serviciosCita.appendChild(headingServicios);
+
+    let cantidadTotal = 0;
+
+    //Iterar sobre el arreglo de servicios
+    servicios.forEach(servicio => {
+
+        const {nombre, precio} = servicio;
+
+        const contenedorServicio = document.createElement('DIV');
+        contenedorServicio.classList.add('contenedor-servicio');
+
+        const nombreServicio = document.createElement('P');
+        nombreServicio.textContent = nombre;
+    
+        const precioServicio = document.createElement('P');
+        precioServicio.textContent = precio;
+        precioServicio.classList.add('precio');
+
+        const totalServicio = precio.split('$');
+        cantidadTotal += parseInt(totalServicio[1].trim());
+
+        //Colocar texto y precio en el div
+        contenedorServicio.appendChild(nombreServicio);
+        contenedorServicio.appendChild(precioServicio);
+
+        serviciosCita.appendChild(contenedorServicio);
+    });
+
+    resumenDiv.appendChild(headingDatos);
+
+    resumenDiv.appendChild(nombreCita);
+    resumenDiv.appendChild(fechaCita);
+    resumenDiv.appendChild(horaCita);
+
+    resumenDiv.appendChild(serviciosCita);
+
+    const cantidadPagar = document.createElement('P');
+    cantidadPagar.classList.add('total');
+    cantidadPagar.innerHTML = `<span>Total a Pagar: </span> $ ${cantidadTotal}`;
+    resumenDiv.appendChild(cantidadPagar);
+
 }
 
 function nombreCita(){
@@ -250,7 +326,7 @@ function nombreCita(){
             }
             cita.nombre = nombreTexto;
         }
-    })
+    });
 }
 
 function mostrarAlerta(mensaje, tipo){
@@ -293,7 +369,7 @@ function fechaCita(){
             cita.fecha = fechaInput.value;
             console.log(cita);
         }   
-    })
+    });
 }
 
 function deshabilitarFechaAnterior(){
@@ -305,11 +381,25 @@ function deshabilitarFechaAnterior(){
     const dia = fechaAhora.getDate();
 
     //Deshabilitar fechas antiguas
-    //Formato deseado: YYYY-MM-DD
-    const fechaDeshabilitar = `${year}-${mes}-${dia}`;
-    //`${year}-${mes < 10 ? `0${mes}` : mes}-${dia}`
+    //Formato deseado: YYYY-MM-DD - Se convierte los dias y meses en dos digitos para que se puedan deshabilitar todos los meses pasados al actual
+    const fechaDeshabilitar = `${year}-${mes < 10 ?  `0${mes}`: mes }-${dia <10 ? `0${dia}`:dia}`;
 
     inputFecha.min = fechaDeshabilitar;
-=======
->>>>>>> 4a5919328cff713284f498d48dc2a0060b7f1008
+}
+
+function horaCita(){
+    const inputHora = document.querySelector('#hora');
+    inputHora.addEventListener('input', e => {
+        const horaCita = e.target.value;
+        const hora = horaCita.split(':'); //Te divide la hora en un arreglo de 2 objetos. El primero la hora, el segundo los minutos
+
+        if (hora[0] < 10 || hora[0] > 18) {
+            mostrarAlerta('Hora no valida', 'error');
+            setTimeout(() => {
+                inputHora.value = '';
+            }, 3000);
+        } else {
+            cita.hora = horaCita;
+        }
+    });
 }

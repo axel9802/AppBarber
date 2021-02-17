@@ -88,15 +88,17 @@ function cambiarSeccion(){
 
 async function mostrarServicios(){
     try {
-        const resultado = await fetch('./servicios.json');
+
+        const url = 'http://localhost:3000/servicios.php';
+
+        const resultado = await fetch(url);
         const db = await resultado.json();
-        
+        //console.log(db);
         /* Aplicando Destructuring:
         const {servicios} = db   --->   las llaves hacen que jale ese valor despues de db*/
-        const servicios = db.servicios;
 
         //Generar HTML
-        servicios.forEach( servicio => {
+        db.forEach( servicio => {
             /* Aplicando Destructuring:
             Esto es igual a : servicios.id, servicios.nombre, servicios.precio*/
             const{ id, nombre, precio } = servicio;
